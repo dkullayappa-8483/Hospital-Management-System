@@ -1,344 +1,937 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="h-full">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Management System</title>
-    <!-- Tailwind CSS (via CDN for glassmorphism utilities) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        medical: {
-                            50: '#f0fdfa',
-                            100: '#ccfbf1',
-                            500: '#14b8a6',
-                            600: '#0d9488',
-                            900: '#134e4a',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Custom CSS -->
+    <title>Smart Hospital Management System</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen relative overflow-x-hidden">
-    <!-- Background Decor (to make glassmorphism pop) -->
-    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-medical-100 blur-[100px] -z-10"></div>
-    <div class="fixed bottom-[-10%] right-[-10%] w-[30%] h-[30%] rounded-full bg-blue-100 blur-[100px] -z-10"></div>
+<body class="h-full gradient-bg text-white overflow-auto">
+    <div id="app" class="h-full w-full"><!-- Login Screen -->
+        <div id="login-screen" class="h-full w-full flex items-center justify-center p-4">
+            <div class="glass-card rounded-3xl p-8 w-full max-w-md fade-in">
+                <div class="text-center mb-8">
+                    <div
+                        class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
+                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                            </path>
+                        </svg>
+                    </div>
+                    <h1 id="system-title" class="text-2xl font-bold text-white mb-2">Smart Hospital Management</h1>
+                    <p id="welcome-msg" class="text-gray-400">Multi-Tenant Healthcare Platform</p>
+                </div>
+                <div class="space-y-4">
+                    <div><label class="block text-sm text-gray-400 mb-2">Select Hospital</label> <select
+                            id="hospital-select"
+                            class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500">
+                            <option value="hosp1">City General Hospital</option>
+                            <option value="hosp2">Medicare Central</option>
+                            <option value="hosp3">LifeCare Medical Center</option>
+                        </select>
+                    </div>
+                    <div><label class="block text-sm text-gray-400 mb-2">Email</label> <input type="email"
+                            id="login-email" placeholder="admin@hospital.com"
+                            class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div><label class="block text-sm text-gray-400 mb-2">Password</label> <input type="password"
+                            id="login-password" placeholder="••••••••"
+                            class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div><label class="block text-sm text-gray-400 mb-2">Login As</label> <select id="role-select"
+                            class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500">
+                            <option value="super_admin">Super Admin</option>
+                            <option value="hospital_admin">Hospital Admin</option>
+                            <option value="doctor">Doctor</option>
+                            <option value="nurse">Nurse</option>
+                            <option value="pharmacist">Pharmacist</option>
+                            <option value="store_manager">Store Manager</option>
+                        </select>
+                    </div><button onclick="handleLogin()"
+                        class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 mt-4">
+                        Sign In with JWT </button>
+                </div>
+                <div class="mt-6 flex items-center justify-center space-x-4 text-sm"><button
+                        onclick="changeLanguage('en')"
+                        class="px-3 py-1 rounded bg-white/10 hover:bg-white/20">English</button> <button
+                        onclick="changeLanguage('hi')"
+                        class="px-3 py-1 rounded bg-white/10 hover:bg-white/20">हिंदी</button> <button
+                        onclick="changeLanguage('es')"
+                        class="px-3 py-1 rounded bg-white/10 hover:bg-white/20">Español</button>
+                </div>
+            </div>
+        </div><!-- Main Dashboard -->
+        <div id="dashboard" class="hidden h-full w-full flex"><!-- Sidebar -->
+            <aside class="w-56 glass-card border-r border-white/10 flex flex-col">
+                <div class="p-4 border-b border-white/10">
+                    <div class="flex items-center space-x-2">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold text-sm">H+</span>
+                        </div>
+                        <div class="min-w-0">
+                            <h2 class="font-bold text-sm truncate" id="current-hospital">City General</h2>
+                            <p class="text-xs text-gray-400 truncate" id="current-role">Hospital Admin</p>
+                        </div>
+                    </div>
+                </div>
+                <nav class="flex-1 p-2 overflow-y-auto space-y-0.5"><button onclick="showSection('overview')"
+                        class="nav-item active w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-left text-sm"
+                        data-section="overview"> <span>📊</span><span>Dashboard</span></button> <button
+                        onclick="showSection('patients')"
+                        class="nav-item w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-left text-sm"
+                        data-section="patients"> <span>👥</span><span>Patients</span></button> <button
+                        onclick="showSection('doctors')"
+                        class="nav-item w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-left text-sm"
+                        data-section="doctors"> <span>👨⚕️</span><span>Doctors</span></button> <button
+                        onclick="showSection('pharmacy')"
+                        class="nav-item w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-left text-sm"
+                        data-section="pharmacy"> <span>💊</span><span>Pharmacy</span></button> <button
+                        onclick="showSection('facilities')"
+                        class="nav-item w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-left text-sm"
+                        data-section="facilities"> <span>🏥</span><span>Facilities</span></button> <button
+                        onclick="showSection('rounds')"
+                        class="nav-item w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-left text-sm"
+                        data-section="rounds"> <span>⏰</span><span>Rounds</span></button> <button
+                        onclick="showSection('hygiene')"
+                        class="nav-item w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-left text-sm"
+                        data-section="hygiene"> <span>✅</span><span>Hygiene</span></button> <button
+                        onclick="showSection('billing')"
+                        class="nav-item w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-left text-sm"
+                        data-section="billing"> <span>💰</span><span>Billing</span></button>
+                </nav>
+                <div class="p-3 border-t border-white/10"><button onclick="triggerEmergency()"
+                        class="pulse-emergency w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                            </path>
+                        </svg><span>EMERGENCY</span> </button>
+                </div>
+                <div class="p-3 border-t border-white/10"><button onclick="handleLogout()"
+                        class="w-full flex items-center justify-center space-x-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                            </path>
+                        </svg><span>Logout</span> </button>
+                </div>
+            </aside><!-- Main Content -->
+            <main class="flex-1 overflow-y-auto p-6"><!-- Overview Section -->
+                <section id="section-overview" class="fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold">Dashboard Overview</h1>
+                            <p class="text-gray-400 text-sm">Real-time hospital statistics</p>
+                        </div>
+                        <div class="flex items-center space-x-3"><span class="text-xs text-gray-400">Last updated: <span
+                                    id="last-update">Just now</span></span> <button onclick="refreshDashboard()"
+                                class="p-2 rounded-lg bg-white/10 hover:bg-white/20">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                    </path>
+                                </svg></button>
+                        </div>
+                    </div><!-- Alert Banner -->
+                    <div id="alerts-banner" class="mb-6 space-y-2"></div><!-- Stats Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="stat-card glass-card rounded-2xl p-4 cursor-pointer"
+                            onclick="showSection('patients')">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor"
+                                        viewbox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z">
+                                        </path>
+                                    </svg>
+                                </div><span
+                                    class="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-full">+12%</span>
+                            </div>
+                            <p class="text-2xl font-bold" id="stat-patients">248</p>
+                            <p class="text-xs text-gray-400">Total Patients</p>
+                        </div>
+                        <div class="stat-card glass-card rounded-2xl p-4 cursor-pointer"
+                            onclick="showSection('doctors')">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor"
+                                        viewbox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z">
+                                        </path>
+                                    </svg>
+                                </div><span
+                                    class="text-xs text-purple-400 bg-purple-500/20 px-2 py-1 rounded-full">Active</span>
+                            </div>
+                            <p class="text-2xl font-bold" id="stat-doctors">45</p>
+                            <p class="text-xs text-gray-400">Total Doctors</p>
+                        </div>
+                        <div class="stat-card glass-card rounded-2xl p-4 cursor-pointer"
+                            onclick="showSection('facilities')">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor"
+                                        viewbox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5">
+                                        </path>
+                                    </svg>
+                                </div><span class="text-xs text-cyan-400 bg-cyan-500/20 px-2 py-1 rounded-full"
+                                    id="icu-status">3 Free</span>
+                            </div>
+                            <p class="text-2xl font-bold" id="stat-icu">8</p>
+                            <p class="text-xs text-gray-400">ICU Rooms</p>
+                        </div>
+                        <div class="stat-card glass-card rounded-2xl p-4 cursor-pointer"
+                            onclick="showSection('pharmacy')">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-yellow-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor"
+                                        viewbox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                        </path>
+                                    </svg>
+                                </div><span
+                                    class="text-xs text-yellow-400 bg-yellow-500/20 px-2 py-1 rounded-full">Alert</span>
+                            </div>
+                            <p class="text-2xl font-bold" id="stat-lowstock">5</p>
+                            <p class="text-xs text-gray-400">Low Stock Items</p>
+                        </div>
+                    </div><!-- Secondary Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div class="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-4 h-4 text-red-400" fill="currentColor" viewbox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <p class="text-lg font-bold text-red-400" id="stat-blood">150</p>
+                            <p class="text-xs text-gray-400">Blood Units</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor"
+                                    viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-lg font-bold text-blue-400" id="stat-oxygen">85</p>
+                            <p class="text-xs text-gray-400">O₂ Cylinders</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor"
+                                    viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                    </path>
+                                </svg>
+                            </div>
+                            <p class="text-lg font-bold text-green-400" id="stat-beds">120</p>
+                            <p class="text-xs text-gray-400">General Beds</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor"
+                                    viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-lg font-bold text-orange-400" id="stat-ambulance">6</p>
+                            <p class="text-xs text-gray-400">Ambulances</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor"
+                                    viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                            </div>
+                            <p class="text-lg font-bold text-pink-400" id="stat-expiring">3</p>
+                            <p class="text-xs text-gray-400">Expiring Soon</p>
+                        </div>
+                    </div><!-- Quick Actions -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4"><button
+                            onclick="showSection('patients');showPatientForm()"
+                            class="glass-card rounded-xl p-4 hover:bg-white/10 transition-all text-left">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-400 flex items-center justify-center mb-3">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <p class="font-semibold text-sm">New Patient</p>
+                            <p class="text-xs text-gray-400">Register patient</p>
+                        </button> <button onclick="showSection('doctors')"
+                            class="glass-card rounded-xl p-4 hover:bg-white/10 transition-all text-left">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-violet-400 flex items-center justify-center mb-3">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <p class="font-semibold text-sm">Find Doctor</p>
+                            <p class="text-xs text-gray-400">Check availability</p>
+                        </button> <button onclick="showSection('billing')"
+                            class="glass-card rounded-xl p-4 hover:bg-white/10 transition-all text-left">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center mb-3">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <p class="font-semibold text-sm">Generate Bill</p>
+                            <p class="text-xs text-gray-400">With scheme discount</p>
+                        </button> <button onclick="showSection('facilities')"
+                            class="glass-card rounded-xl p-4 hover:bg-white/10 transition-all text-left">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center mb-3">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                            <p class="font-semibold text-sm">Scan Hospitals</p>
+                            <p class="text-xs text-gray-400">Find resources</p>
+                        </button>
+                    </div>
+                </section><!-- Patients Section -->
+                <section id="section-patients" class="hidden fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold">Patient Management</h1>
+                            <p class="text-gray-400 text-sm">OPD &amp; IPD Patients</p>
+                        </div><button onclick="showPatientForm()"
+                            class="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-400 rounded-xl font-semibold text-sm flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg><span>Add Patient</span> </button>
+                    </div><!-- Patient Form Modal -->
+                    <div id="patient-form-modal" class="hidden glass-card rounded-2xl p-6 mb-6">
+                        <h3 class="text-lg font-bold mb-4">Register New Patient</h3>
+                        <form id="patient-form" class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                            onsubmit="event.preventDefault(); savePatient();">
+                            <div><label class="block text-sm text-gray-400 mb-1">Patient Name</label> <input type="text"
+                                    id="p-name" required
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Age</label> <input type="number"
+                                    id="p-age" required
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Gender</label> <select id="p-gender"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Phone</label> <input type="tel"
+                                    id="p-phone" required
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Admission Type</label> <select
+                                    id="p-admission"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                                    <option value="OPD">OPD (Outpatient)</option>
+                                    <option value="IPD">IPD (Inpatient)</option>
+                                </select>
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Assign Doctor</label> <select
+                                    id="p-doctor"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                                    <option value="Dr. Smith">Dr. Smith - Cardiology</option>
+                                    <option value="Dr. Johnson">Dr. Johnson - Neurology</option>
+                                    <option value="Dr. Williams">Dr. Williams - Orthopedics</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2"><label class="block text-sm text-gray-400 mb-1">Address</label>
+                                <textarea id="p-address" rows="2"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500"></textarea>
+                            </div>
+                            <div class="md:col-span-2 flex space-x-3"><button type="submit"
+                                    class="px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-400 rounded-lg font-semibold">Save
+                                    Patient</button> <button type="button" onclick="hidePatientForm()"
+                                    class="px-6 py-2 bg-white/10 rounded-lg">Cancel</button>
+                            </div>
+                        </form>
+                    </div><!-- Admission Checklist -->
+                    <div id="admission-checklist"
+                        class="hidden glass-card rounded-2xl p-6 mb-6 border-l-4 border-blue-500">
+                        <h3 class="text-lg font-bold mb-4">📋 IPD Admission Checklist</h3>
+                        <p class="text-gray-400 text-sm mb-4">Items patient should bring for admission:</p>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3"><label
+                                class="flex items-center space-x-2 text-sm"><input type="checkbox" class="rounded">
+                                <span>Valid ID Proof</span></label> <label
+                                class="flex items-center space-x-2 text-sm"><input type="checkbox" class="rounded">
+                                <span>Insurance Documents</span></label> <label
+                                class="flex items-center space-x-2 text-sm"><input type="checkbox" class="rounded">
+                                <span>Previous Medical Records</span></label> <label
+                                class="flex items-center space-x-2 text-sm"><input type="checkbox" class="rounded">
+                                <span>Current Medications List</span></label> <label
+                                class="flex items-center space-x-2 text-sm"><input type="checkbox" class="rounded">
+                                <span>Emergency Contact Info</span></label> <label
+                                class="flex items-center space-x-2 text-sm"><input type="checkbox" class="rounded">
+                                <span>Personal Clothing</span></label> <label
+                                class="flex items-center space-x-2 text-sm"><input type="checkbox" class="rounded">
+                                <span>Toiletries</span></label> <label
+                                class="flex items-center space-x-2 text-sm"><input type="checkbox" class="rounded">
+                                <span>Mobile Phone &amp; Charger</span></label>
+                        </div>
+                    </div><!-- Patient List -->
+                    <div class="glass-card rounded-2xl overflow-hidden">
+                        <div class="p-4 border-b border-white/10 flex items-center justify-between"><input type="text"
+                                placeholder="Search patients..."
+                                class="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:border-blue-500">
+                            <div class="flex space-x-2"><button
+                                    class="px-3 py-1 text-sm bg-blue-500/20 text-blue-400 rounded-lg">All</button>
+                                <button class="px-3 py-1 text-sm bg-white/10 rounded-lg hover:bg-white/20">OPD</button>
+                                <button class="px-3 py-1 text-sm bg-white/10 rounded-lg hover:bg-white/20">IPD</button>
+                            </div>
+                        </div>
+                        <div id="patient-list" class="divide-y divide-white/10"></div>
+                    </div>
+                </section><!-- Doctors Section -->
+                <section id="section-doctors" class="hidden fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold">Doctor Directory</h1>
+                            <p class="text-gray-400 text-sm">Find available doctors</p>
+                        </div>
+                        <button onclick="showDoctorForm()"
+                            class="px-4 py-2 bg-gradient-to-r from-purple-500 to-violet-400 rounded-xl font-semibold text-sm flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <span>Add Doctor</span>
+                        </button>
+                    </div>
 
-    <!-- Navigation Bar -->
-    <nav class="glass-nav sticky top-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300">
-        <div class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-            <i data-lucide="hospital" class="w-8 h-8 text-medical-600"></i>
-            <span
-                class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-medical-600 to-blue-600">MediCare
-                Core</span>
-        </div>
+                    <!-- Doctor Form Modal -->
+                    <div id="doctor-form-modal" class="hidden glass-card rounded-2xl p-6 mb-6">
+                        <h3 class="text-lg font-bold mb-4">Add Doctor Profile</h3>
+                        <form id="doctor-form" class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                            onsubmit="event.preventDefault(); saveDoctor();">
+                            <div><label class="block text-sm text-gray-400 mb-1">Doctor Name</label> <input type="text"
+                                    id="d-name" required
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none placeholder-gray-500"
+                                    placeholder="Dr. First Last"></div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Specialization</label> <select
+                                    id="d-spec"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none">
+                                    <option value="Cardiology">Cardiology</option>
+                                    <option value="Neurology">Neurology</option>
+                                    <option value="Orthopedics">Orthopedics</option>
+                                    <option value="Pediatrics">Pediatrics</option>
+                                    <option value="General Medicine">General Medicine</option>
+                                </select></div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Available Days</label> <select
+                                    id="d-days" multiple
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none h-24">
+                                    <option value="Monday">Monday</option>
+                                    <option value="Tuesday">Tuesday</option>
+                                    <option value="Wednesday">Wednesday</option>
+                                    <option value="Thursday">Thursday</option>
+                                    <option value="Friday">Friday</option>
+                                    <option value="Saturday">Saturday</option>
+                                    <option value="Sunday">Sunday</option>
+                                </select>
+                                <p class="text-xs text-gray-500 mt-1">Hold Ctrl (Windows) or Cmd (Mac) to select
+                                    multiple</p>
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Available Shift</label> <select
+                                    id="d-time"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none">
+                                    <option value="Morning">Morning</option>
+                                    <option value="Afternoon">Afternoon</option>
+                                    <option value="Evening">Evening</option>
+                                </select></div>
+                            <div class="md:col-span-2 flex space-x-3"><button type="submit"
+                                    class="px-6 py-2 bg-gradient-to-r from-purple-500 to-violet-400 rounded-lg font-semibold text-white">Save
+                                    Profile</button> <button type="button" onclick="hideDoctorForm()"
+                                    class="px-6 py-2 bg-white/10 rounded-lg text-white">Cancel</button></div>
+                        </form>
+                    </div>
 
-        <div class="hidden md:flex items-center space-x-6 text-sm font-medium">
-            <a href="#" class="nav-link hover:text-medical-600 transition-colors">Admin</a>
-            <div class="relative group">
-                <button class="nav-link flex items-center gap-1 hover:text-medical-600 transition-colors py-2">
-                    <i data-lucide="globe" class="w-4 h-4"></i> Languages
-                    <i data-lucide="chevron-down" class="w-3 h-3 ml-0.5"></i>
-                </button>
-                <!-- Dropdown Menu -->
+                    <!-- Appointment Form Modal -->
+                    <div id="appointment-form-modal"
+                        class="hidden glass-card rounded-2xl p-6 mb-6 border border-green-500/30">
+                        <h3 class="text-lg font-bold mb-4 text-green-400">Book Appointment</h3>
+                        <form id="appointment-form" class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                            onsubmit="event.preventDefault(); saveAppointment();">
+                            <div><label class="block text-sm text-gray-400 mb-1">Doctor</label> <input type="text"
+                                    id="appt-doctor" readonly
+                                    class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-gray-300 focus:outline-none">
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Patient Name</label> <input type="text"
+                                    id="appt-patient" required
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none placeholder-gray-500"
+                                    placeholder="Full Name"></div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Date</label> <input type="date"
+                                    id="appt-date" required
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none">
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Time Slot</label> <select
+                                    id="appt-time" required
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none">
+                                    <option value="Morning">Morning (8 AM - 12 PM)</option>
+                                    <option value="Afternoon">Afternoon (12 PM - 4 PM)</option>
+                                    <option value="Evening">Evening (4 PM - 8 PM)</option>
+                                </select></div>
+                            <div class="md:col-span-2"><label class="block text-sm text-gray-400 mb-1">Reason for
+                                    Visit</label>
+                                <textarea id="appt-reason" rows="2"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none"
+                                    placeholder="Brief description..."></textarea>
+                            </div>
+                            <div class="md:col-span-2 flex space-x-3"><button type="submit"
+                                    class="px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-400 rounded-lg font-semibold text-white flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Confirm Booking</span>
+                                </button> <button type="button" onclick="hideAppointmentForm()"
+                                    class="px-6 py-2 bg-white/10 rounded-lg text-white">Cancel</button></div>
+                        </form>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="glass-card rounded-2xl p-4 mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div><label class="block text-sm text-gray-400 mb-1">Specialization</label> <select
+                                    id="filter-spec" onchange="filterDoctors()"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none">
+                                    <option value="">All Specializations</option>
+                                    <option value="Cardiology">Cardiology</option>
+                                    <option value="Neurology">Neurology</option>
+                                    <option value="Orthopedics">Orthopedics</option>
+                                    <option value="Pediatrics">Pediatrics</option>
+                                    <option value="General Medicine">General Medicine</option>
+                                </select>
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Day</label> <select id="filter-day"
+                                    onchange="filterDoctors()"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none">
+                                    <option value="">Any Day</option>
+                                    <option value="Monday">Monday</option>
+                                    <option value="Tuesday">Tuesday</option>
+                                    <option value="Wednesday">Wednesday</option>
+                                    <option value="Thursday">Thursday</option>
+                                    <option value="Friday">Friday</option>
+                                    <option value="Saturday">Saturday</option>
+                                </select>
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Time</label> <select id="filter-time"
+                                    onchange="filterDoctors()"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none">
+                                    <option value="">Any Time</option>
+                                    <option value="Morning">Morning (8AM-12PM)</option>
+                                    <option value="Afternoon">Afternoon (12PM-5PM)</option>
+                                    <option value="Evening">Evening (5PM-9PM)</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end"><button onclick="filterDoctors()"
+                                    class="w-full px-4 py-2 bg-gradient-to-r from-purple-500 to-violet-400 rounded-lg font-semibold">Search</button>
+                            </div>
+                        </div>
+                    </div><!-- Doctor List -->
+                    <div id="doctor-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </section><!-- Pharmacy Section -->
+                <section id="section-pharmacy" class="hidden fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold">Pharmacy &amp; Stock</h1>
+                            <p class="text-gray-400 text-sm">Medicine inventory management</p>
+                        </div><button onclick="showMedicineForm()"
+                            class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-400 rounded-xl font-semibold text-sm flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg><span>Add Medicine</span> </button>
+                    </div><!-- Alerts -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="glass-card rounded-2xl p-4 border-l-4 border-yellow-500">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-xl bg-yellow-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor"
+                                        viewbox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-yellow-400">Low Stock Alert</p>
+                                    <p class="text-sm text-gray-400"><span id="low-stock-count">5</span> items below
+                                        threshold</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-card rounded-2xl p-4 border-l-4 border-red-500">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor"
+                                        viewbox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-red-400">Expiry Alert</p>
+                                    <p class="text-sm text-gray-400"><span id="expiry-count">3</span> items expiring
+                                        within 30 days</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- Medicine Form Modal -->
+                    <div id="medicine-form-modal" class="hidden glass-card rounded-2xl p-6 mb-6">
+                        <h3 class="text-lg font-bold mb-4">Add New Medicine</h3>
+                        <form id="medicine-form" class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                            onsubmit="event.preventDefault(); saveMedicine();">
+                            <div><label class="block text-sm text-gray-400 mb-1">Medicine Name</label> <input
+                                    type="text" id="m-name" required
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Category</label> <select
+                                    id="m-category"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none">
+                                    <option value="Tablets">Tablets</option>
+                                    <option value="Syrups">Syrups</option>
+                                    <option value="Injections">Injections</option>
+                                    <option value="Ointments">Ointments</option>
+                                </select>
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Batch Number</label> <input type="text"
+                                    id="m-batch" required
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Expiry Date</label> <input type="date"
+                                    id="m-expiry" required
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Quantity</label> <input type="number"
+                                    id="m-quantity" required
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Price (₹)</label> <input type="number"
+                                    id="m-price" step="0.01" required
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div class="md:col-span-2 flex space-x-3"><button type="submit"
+                                    class="px-6 py-2 bg-gradient-to-r from-yellow-500 to-orange-400 rounded-lg font-semibold">Save
+                                    Medicine</button> <button type="button" onclick="hideMedicineForm()"
+                                    class="px-6 py-2 bg-white/10 rounded-lg">Cancel</button>
+                            </div>
+                        </form>
+                    </div><!-- Medicine List -->
+                    <div class="glass-card rounded-2xl overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-white/5">
+                                    <tr>
+                                        <th class="text-left px-4 py-3 text-sm font-semibold text-gray-400">Medicine
+                                        </th>
+                                        <th class="text-left px-4 py-3 text-sm font-semibold text-gray-400">Category
+                                        </th>
+                                        <th class="text-left px-4 py-3 text-sm font-semibold text-gray-400">Stock</th>
+                                        <th class="text-left px-4 py-3 text-sm font-semibold text-gray-400">Expiry</th>
+                                        <th class="text-left px-4 py-3 text-sm font-semibold text-gray-400">Price</th>
+                                        <th class="text-left px-4 py-3 text-sm font-semibold text-gray-400">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="medicine-list" class="divide-y divide-white/10"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <!-- Facilities Section -->
+                <section id="section-facilities" class="hidden fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold">Facility Resources</h1>
+                            <p class="text-gray-400 text-sm">Nearby hospitals and resources</p>
+                        </div>
+                        <button onclick="scanHospitals()"
+                            class="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-xl font-semibold text-sm flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <span>Scan Hospitals</span>
+                        </button>
+                    </div>
+
+                    <!-- Facility Metrics -->
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div class="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-4 h-4 text-red-400" fill="currentColor" viewbox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <p class="text-lg font-bold text-red-400" id="fac-blood">150</p>
+                            <p class="text-xs text-gray-400">Blood Units</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor"
+                                    viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-lg font-bold text-blue-400" id="fac-oxygen">85</p>
+                            <p class="text-xs text-gray-400">O₂ Cylinders</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor"
+                                    viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                    </path>
+                                </svg>
+                            </div>
+                            <p class="text-lg font-bold text-green-400" id="fac-beds">120</p>
+                            <p class="text-xs text-gray-400">General Beds</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor"
+                                    viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-lg font-bold text-orange-400" id="fac-ambulance">6</p>
+                            <p class="text-xs text-gray-400">Ambulances</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-yellow-500/20 flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor"
+                                    viewbox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-lg font-bold text-yellow-400" id="fac-food">Active</p>
+                            <p class="text-xs text-gray-400">Food Services</p>
+                        </div>
+                    </div>
+                    <div id="hospital-scan-results" class="hidden">
+                        <div id="scan-results-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                    </div>
+                </section>
+
+                <!-- Rounds Section -->
+                <section id="section-rounds" class="hidden fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold">Staff Rounds</h1>
+                            <p class="text-gray-400 text-sm">Daily ward visits schedule</p>
+                        </div>
+                        <button onclick="showRoundForm()"
+                            class="px-4 py-2 bg-gradient-to-r from-purple-500 to-violet-400 rounded-xl font-semibold text-sm flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <span>Add Round</span>
+                        </button>
+                    </div>
+                    <!-- Round Form Modal -->
+                    <div id="round-form-modal" class="hidden glass-card rounded-2xl p-6 mb-6">
+                        <form id="round-form" class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                            onsubmit="event.preventDefault(); saveRound();">
+                            <div><label class="block text-sm text-gray-400 mb-1">Staff Name</label> <input type="text"
+                                    id="r-staff"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white">
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Role</label> <select id="r-role"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white">
+                                    <option>Doctor</option>
+                                    <option>Nurse</option>
+                                </select></div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Ward</label> <input type="text"
+                                    id="r-ward"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white">
+                            </div>
+                            <div><label class="block text-sm text-gray-400 mb-1">Time</label> <input type="time"
+                                    id="r-time"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white">
+                            </div>
+                            <div class="md:col-span-2 flex space-x-3"><button type="submit"
+                                    class="px-6 py-2 bg-gradient-to-r from-purple-500 to-violet-400 rounded-lg font-semibold">Save
+                                    Round</button> <button type="button" onclick="hideRoundForm()"
+                                    class="px-6 py-2 bg-white/10 rounded-lg">Cancel</button></div>
+                        </form>
+                    </div>
+                    <div class="glass-card rounded-2xl overflow-hidden divide-y divide-white/10" id="rounds-list"></div>
+                </section>
+
+                <!-- Hygiene Section -->
+                <section id="section-hygiene" class="hidden fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold">Hygiene Checks</h1>
+                            <p class="text-gray-400 text-sm">Staff compliance monitoring</p>
+                        </div>
+                        <button onclick="showHygieneForm()"
+                            class="px-4 py-2 bg-gradient-to-r from-teal-500 to-green-400 rounded-xl font-semibold text-sm flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <span>Add Check</span>
+                        </button>
+                    </div>
+                    <!-- Form Modal -->
+                    <div id="hygiene-form-modal" class="hidden glass-card rounded-2xl p-6 mb-6">
+                        <form id="hygiene-form" class="space-y-4"
+                            onsubmit="event.preventDefault(); saveHygieneCheck();">
+                            <div><label class="block text-sm text-gray-400 mb-1">Staff Member / Location</label> <input
+                                    type="text" id="h-staff"
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white">
+                            </div>
+                            <div class="flex space-x-4">
+                                <label class="flex items-center space-x-2"><input type="checkbox" id="h-gloves"
+                                        class="rounded"> <span>Gloves Installed</span></label>
+                                <label class="flex items-center space-x-2"><input type="checkbox" id="h-mask"
+                                        class="rounded"> <span>Mask Worn</span></label>
+                                <label class="flex items-center space-x-2"><input type="checkbox" id="h-sanitized"
+                                        class="rounded"> <span>Hands Sanitized</span></label>
+                            </div>
+                            <div class="flex space-x-3"><button type="submit"
+                                    class="px-6 py-2 bg-gradient-to-r from-teal-500 to-green-400 rounded-lg font-semibold">Save
+                                    Record</button> <button type="button" onclick="hideHygieneForm()"
+                                    class="px-6 py-2 bg-white/10 rounded-lg">Cancel</button></div>
+                        </form>
+                    </div>
+                    <div class="glass-card rounded-2xl overflow-hidden divide-y divide-white/10" id="hygiene-list">
+                    </div>
+                </section>
+
+                <!-- Billing Section -->
+                <section id="section-billing" class="hidden fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold">Billing &amp; Schemes</h1>
+                            <p class="text-gray-400 text-sm">Patient invoices and government schemes</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="glass-card rounded-2xl p-6">
+                            <h3 class="text-lg font-bold mb-4">Generate Bill</h3>
+                            <div class="space-y-4">
+                                <div><label class="block text-sm text-gray-400 mb-1">Patient Name/ID</label><input
+                                        type="text" id="bill-patient" placeholder="e.g. John Doe"
+                                        class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white">
+                                </div>
+                                <div><label class="block text-sm text-gray-400 mb-1">Apply Scheme</label><select
+                                        id="bill-scheme" onchange="updateBillPreview()"
+                                        class="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white">
+                                        <option value="">No Scheme (0% Discount)</option>
+                                        <option value="ayushman">Ayushman Bharat (100% Discount)</option>
+                                        <option value="pmjay">PM-JAY (80% Discount)</option>
+                                        <option value="esis">ESIS (70% Discount)</option>
+                                        <option value="cghs">CGHS (60% Discount)</option>
+                                    </select></div>
+
+                                <div class="mt-4 p-4 bg-white/5 rounded-xl">
+                                    <div class="flex justify-between text-sm mb-2"><span
+                                            class="text-gray-400">Subtotal:</span><span>₹5,000</span></div>
+                                    <div class="flex justify-between text-sm mb-2"><span class="text-gray-400">Scheme
+                                            Discount:</span><span id="bill-discount" class="text-green-400">-₹0</span>
+                                    </div>
+                                    <div
+                                        class="flex justify-between text-lg font-bold mt-2 pt-2 border-t border-white/20">
+                                        <span class="text-white">Total:</span><span id="bill-total"
+                                            class="text-white">₹5,000</span>
+                                    </div>
+                                </div>
+
+                                <button onclick="generateBill()"
+                                    class="w-full px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-lg font-semibold mt-2">Generate
+                                    Invoice</button>
+                            </div>
+                            <div id="bill-preview"
+                                class="hidden mt-6 bg-black/30 border border-white/10 p-5 rounded-xl">
+                                <h4 class="font-bold text-center mb-4 pb-2 border-b border-white/10">INVOICE PREVIEW
+                                </h4>
+                                <div id="bill-content"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold mb-4">Available Schemes</h3>
+                            <div id="schemes-list" class="space-y-4"></div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div><!-- Emergency Modal -->
+        <div id="emergency-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+            <div class="glass-card rounded-3xl p-8 max-w-md w-full text-center">
                 <div
-                    class="absolute top-full left-0 mt-1 w-40 bg-white border border-slate-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
-                    <button onclick="changeLanguage('en')"
-                        class="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-medical-50 hover:text-medical-600 font-medium border-b border-slate-50 last:border-0 transition-colors">English</button>
-                    <button onclick="changeLanguage('hi')"
-                        class="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-medical-50 hover:text-medical-600 font-medium border-b border-slate-50 last:border-0 transition-colors">Hindi
-                        (हिन्दी)</button>
-                    <button onclick="changeLanguage('ta')"
-                        class="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-medical-50 hover:text-medical-600 font-medium border-b border-slate-50 last:border-0 transition-colors">Tamil
-                        (தமிழ்)</button>
-                    <button onclick="changeLanguage('te')"
-                        class="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-medical-50 hover:text-medical-600 font-medium border-b border-slate-50 last:border-0 transition-colors">Telugu
-                        (తెలుగు)</button>
-                    <button onclick="changeLanguage('es')"
-                        class="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-medical-50 hover:text-medical-600 font-medium border-b border-slate-50 last:border-0 transition-colors">Spanish</button>
-                    <button onclick="changeLanguage('fr')"
-                        class="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-medical-50 hover:text-medical-600 font-medium border-b border-slate-50 last:border-0 transition-colors">French</button>
+                    class="w-20 h-20 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center pulse-emergency">
+                    <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                        </path>
+                    </svg>
                 </div>
-            </div>
-            <button onclick="alert('Location selection feature coming soon!')"
-                class="nav-link flex items-center gap-1 hover:text-medical-600 transition-colors">
-                <i data-lucide="map-pin" class="w-4 h-4"></i> Location
-            </button>
-            <a href="#hospitals" class="nav-link hover:text-medical-600 transition-colors">Hospitals List</a>
-        </div>
-
-        <div class="flex items-center gap-2 md:gap-4 mt-4 md:mt-0 w-full md:w-auto justify-between md:justify-end">
-            <div class="flex lg:hidden items-center text-sm font-medium mr-auto">
-                <button class="nav-link flex items-center gap-1 hover:text-medical-600 text-slate-600">
-                    <i data-lucide="menu" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <div
-                class="flex items-center bg-white/50 border border-white/60 rounded-full px-3 md:px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-medical-500/50 transition-all flex-1 md:flex-none">
-                <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
-                <input type="text" id="nav-search" placeholder="Search..."
-                    class="bg-transparent border-none outline-none text-sm ml-2 w-full md:w-48 placeholder:text-slate-400"
-                    onkeypress="if(event.key === 'Enter') handleSearch('nav')">
-            </div>
-            <button onclick="openModal('staffLogin')"
-                class="glass-btn flex items-center gap-1 md:gap-2 bg-gradient-to-r from-medical-500 to-medical-600 text-white px-3 md:px-5 py-2 md:py-2.5 rounded-full font-medium hover:shadow-lg hover:shadow-medical-500/30 transition-all transform hover:-translate-y-0.5 text-sm md:text-base">
-                <i data-lucide="log-in" class="w-4 h-4"></i><span class="hidden sm:inline">Staff Login</span><span
-                    class="sm:hidden">Login</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Main Content Area -->
-    <main class="container mx-auto px-6 py-8" id="app-root">
-        <!-- Hero Section -->
-        <section class="text-center py-16 animate-fade-in-up">
-            <h1 class="text-5xl md:text-6xl font-bold mb-6 text-slate-800 leading-tight">
-                Modern Healthcare, <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-medical-600 to-blue-600">Seamlessly
-                    Managed.</span>
-            </h1>
-            <p class="text-slate-500 max-w-2xl mx-auto text-lg mb-10">Find hospitals, book appointments with top
-                doctors, check ICU availability, and manage your medical needs with our intelligent platform.</p>
-
-            <div
-                class="glass-card flex flex-col md:flex-row p-3 rounded-2xl md:rounded-full max-w-4xl mx-auto shadow-xl shadow-slate-200/50 border border-white/80 gap-3 md:gap-0">
-                <div class="flex-1 flex items-center px-4 py-2 md:border-r border-slate-200">
-                    <i data-lucide="activity" class="w-5 h-5 text-medical-500 mr-3"></i>
-                    <select id="hero-disease"
-                        class="w-full bg-transparent outline-none text-slate-500 appearance-none cursor-pointer"
-                        onchange="handleSearch('hero')">
-                        <option value="" disabled selected>Select by Disease / Specialty</option>
-                        <option value="heart">Heart & Cardiology</option>
-                        <option value="neuro">Brain & Neurology</option>
-                        <option value="surgeon">General Surgery Needs</option>
-                        <option value="bone">Bone & Orthopedics</option>
-                        <option value="child">Pediatrics & Child Care</option>
-                        <option value="fever">General Infection / Fever</option>
-                    </select>
-                </div>
-                <div class="flex-1 flex items-center px-4 py-2">
-                    <i data-lucide="building-2" class="w-5 h-5 text-medical-500 mr-3"></i>
-                    <select id="hero-hospital"
-                        class="w-full bg-transparent outline-none text-slate-500 appearance-none cursor-pointer"
-                        onchange="handleSearch('hero')">
-                        <option value="" disabled selected>Select Hospital in AP</option>
-                        <option value="Apollo Hospitals">Apollo Hospitals (Vizag)</option>
-                        <option value="KIMS ICON Hospital">KIMS ICON (Vizag)</option>
-                        <option value="Ramesh Hospitals">Ramesh Hospitals (Vijayawada)</option>
-                        <option value="Manipal Hospital">Manipal Hospital (Vijayawada)</option>
-                        <option value="AIIMS Mangalagiri">AIIMS Mangalagiri (Guntur)</option>
-                        <option value="Narayana Medical College">Narayana Medical College (Nellore)</option>
-                        <option value="Sri Sathya Sai Institute">Sri Sathya Sai Institute (Puttaparthi)</option>
-                        <option value="Sri Sathya Sai General">Sri Sathya Sai General (Puttaparthi)</option>
-                        <option value="Government General Hospital">Government General Hospital (Hindupur)</option>
-                        <option value="Kusuma Hospital">Kusuma Hospital (Hindupur)</option>
-                    </select>
-                </div>
-                <button onclick="handleSearch('hero')"
-                    class="bg-slate-800 text-white rounded-full px-8 py-3 font-medium hover:bg-slate-900 transition-colors mt-3 md:mt-0 flex items-center justify-center gap-2">
-                    Search <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </button>
-            </div>
-        </section>
-
-        <!-- Hospital Profile Dashboard (Grid) -->
-        <section id="hospitals" class="py-12">
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-0 mb-8">
-                <div>
-                    <h2
-                        class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-800 to-slate-600">
-                        Hospital Dashboard Network
-                    </h2>
-                    <p class="text-slate-500 mt-1 flex items-center gap-1 text-sm md:text-base">
-                        <i data-lucide="network" class="w-4 h-4"></i>
-                        Select a hospital above to view specific metrics
+                <h2 class="text-2xl font-bold text-red-500 mb-2">🚨 EMERGENCY ALERT</h2>
+                <p class="text-gray-400 mb-6">Emergency response team has been notified. Help is on the way!</p>
+                <div class="space-y-3">
+                    <p class="text-sm"><strong>Alert ID:</strong> <span id="emergency-id">EMG-001</span></p>
+                    <p class="text-sm"><strong>Time:</strong> <span id="emergency-time"></span></p>
+                    <p class="text-sm"><strong>Location:</strong> <span id="emergency-location">Ward A - Room 102</span>
                     </p>
-                </div>
-                <span
-                    class="glass-badge px-4 py-1.5 rounded-full text-sm font-medium text-medical-600 flex items-center gap-2 self-start sm:self-auto">
-                    <div class="w-2 h-2 rounded-full bg-medical-500 animate-pulse"></div> Network Online
-                </span>
+                </div><button onclick="closeEmergencyModal()"
+                    class="mt-6 px-8 py-3 bg-red-600 hover:bg-red-700 rounded-xl font-semibold">Close Alert</button>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="dashboard-grid">
-                <!-- Categories will be injected via JS -->
-            </div>
-        </section>
-    </main>
-
-    <!-- Secure Staff Dashboard Section (Hidden by Default) -->
-    <div id="staff-dashboard" class="container mx-auto px-6 py-8" style="display: none;">
-        <div class="glass-card rounded-3xl p-8 max-w-5xl mx-auto shadow-xl">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                <div>
-                    <h2 class="text-3xl font-bold text-slate-800" id="staff-hosp-name">Hospital Admin Portal</h2>
-                    <p class="text-medical-600 font-medium">Internal Secure Systems</p>
-                </div>
-                <button onclick="logoutStaff()"
-                    class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-5 py-2.5 rounded-full font-medium transition-colors flex items-center gap-2">
-                    <i data-lucide="log-out" class="w-4 h-4"></i> Secure Logout
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Data Card: Patients -->
-                <div
-                    class="bg-gradient-to-br from-blue-50 to-medical-50 border border-blue-100 p-6 rounded-2xl relative overflow-hidden">
-                    <i data-lucide="users" class="w-24 h-24 text-blue-200 absolute -right-6 -bottom-6 opacity-50"></i>
-                    <h3 class="text-lg font-bold text-slate-700 mb-1 relative z-10">Total Registered Patients</h3>
-                    <div class="text-5xl font-extrabold text-blue-600 relative z-10" id="staff-patients-count">--</div>
-                    <p class="text-sm text-blue-500 mt-2 font-medium relative z-10">+12% from last month</p>
-                </div>
-
-                <!-- Data Card: Staff -->
-                <div
-                    class="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 p-6 rounded-2xl relative overflow-hidden">
-                    <i data-lucide="stethoscope"
-                        class="w-24 h-24 text-indigo-200 absolute -right-6 -bottom-6 opacity-50"></i>
-                    <h3 class="text-lg font-bold text-slate-700 mb-1 relative z-10">Active Staff Members</h3>
-                    <div class="text-5xl font-extrabold text-indigo-600 relative z-10" id="staff-members-count">--</div>
-                    <p class="text-sm text-indigo-500 mt-2 font-medium relative z-10">Doctors & Nurses on Duty</p>
-                </div>
-
-                <!-- Data Card: Resources -->
-                <div
-                    class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 p-6 rounded-2xl relative overflow-hidden">
-                    <i data-lucide="activity"
-                        class="w-24 h-24 text-emerald-200 absolute -right-6 -bottom-6 opacity-50"></i>
-                    <h3 class="text-lg font-bold text-slate-700 mb-1 relative z-10">System Status</h3>
-                    <div class="text-3xl font-extrabold text-emerald-600 relative z-10 mt-2 flex items-center gap-2">
-                        <span class="w-4 h-4 bg-emerald-500 rounded-full animate-pulse"></span> Optimal
-                    </div>
-                    <p class="text-sm text-emerald-600 mt-2 font-medium relative z-10">All DB servers running</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-                <!-- Main Records Area -->
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="flex justify-between items-center border-b border-slate-200 pb-2">
-                        <h3 class="text-xl font-bold text-slate-800">Recent Patient Directory</h3>
-                        <button class="text-medical-600 text-sm font-medium hover:text-medical-700">View All</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="text-slate-500 text-sm border-b border-slate-100">
-                                    <th class="pb-3 font-medium">Patient Name</th>
-                                    <th class="pb-3 font-medium">ID / Ref</th>
-                                    <th class="pb-3 font-medium">Department</th>
-                                    <th class="pb-3 font-medium">Status</th>
-                                    <th class="pb-3 font-medium">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="staff-patient-records" class="text-sm">
-                                <!-- Generated by JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Hospital Details Sidebar -->
-                <div class="space-y-6">
-                    <div class="border-b border-slate-200 pb-2">
-                        <h3 class="text-xl font-bold text-slate-800">Hospital Parameters</h3>
-                    </div>
-                    <div class="space-y-4">
-                        <div
-                            class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex justify-center items-center">
-                                    <i data-lucide="bed" class="w-4 h-4"></i></div>
-                                <span class="text-slate-700 font-medium">Available Wards</span>
-                            </div>
-                            <span class="font-bold text-blue-600" id="staff-detail-wards">--</span>
-                        </div>
-                        <div
-                            class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex justify-center items-center">
-                                    <i data-lucide="activity" class="w-4 h-4"></i></div>
-                                <span class="text-slate-700 font-medium">ICU Beds Free</span>
-                            </div>
-                            <span class="font-bold text-emerald-600" id="staff-detail-icu">--</span>
-                        </div>
-                        <div
-                            class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-cyan-100 text-cyan-600 flex justify-center items-center">
-                                    <i data-lucide="wind" class="w-4 h-4"></i></div>
-                                <span class="text-slate-700 font-medium">Ventilators Active</span>
-                            </div>
-                            <span class="font-bold text-cyan-600" id="staff-detail-vents">--</span>
-                        </div>
-                        <div
-                            class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex justify-center items-center">
-                                    <i data-lucide="alert-triangle" class="w-4 h-4"></i></div>
-                                <span class="text-slate-700 font-medium">Emergency ER Pats</span>
-                            </div>
-                            <span class="font-bold text-orange-600" id="staff-detail-er">--</span>
-                        </div>
-                    </div>
-
-                    <!-- Secure Alert -->
-                    <div class="mt-8 bg-amber-50 border border-amber-200 p-4 flex items-start gap-3 rounded-xl">
-                        <i data-lucide="shield-alert" class="w-6 h-6 text-amber-500 flex-shrink-0 mt-0.5"></i>
-                        <div class="text-xs text-amber-800">
-                            <strong>Security Notice:</strong> You are logged into the protected Admin System.
-                            Modifications are logged permanently.
-                        </div>
-                    </div>
-                </div>
+        </div><!-- Toast Notification -->
+        <div id="toast" class="hidden fixed bottom-4 right-4 glass-card rounded-xl px-6 py-4 z-50 slide-in">
+            <div class="flex items-center space-x-3"><span id="toast-icon">✅</span> <span id="toast-message">Action
+                    completed successfully</span>
             </div>
         </div>
     </div>
-
-    <!-- Modals Container -->
-    <div id="modal-container"></div>
-
-    <!-- Hidden Google Translate Element -->
-    <div id="google_translate_element" style="display: none;"></div>
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'google_translate_element');
-        }
-    </script>
-    <script type="text/javascript"
-        src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
     <script src="script.js"></script>
-    <style>
-        /* Hide the default Google Translate top banner when translated */
-        .skiptranslate.goog-te-banner-frame {
-            display: none !important;
-        }
-
-        body {
-            top: 0px !important;
-        }
-    </style>
 </body>
 
 </html>
